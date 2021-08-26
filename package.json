@@ -1,0 +1,12 @@
+{
+  "devDependencies": {
+    "@serverless/typescript": "^2.55.0",
+    "@types/aws-lambda": "^8.10.83",
+    "json-schema-to-ts": "^1.6.4",
+    "serverless-bundle": "^4.4.0"
+  },
+  "dependencies": {
+    "@middy/core": "^2.5.1",
+    "@middy/http-json-body-parser": "^2.5.1"
+  }
+}
