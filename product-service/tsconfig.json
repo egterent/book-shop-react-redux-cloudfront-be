@@ -1,16 +1,19 @@
 {
   "extends": "./tsconfig.paths.json",
   "compilerOptions": {
+    "esModuleInterop": true,
     "lib": ["ESNext"],
+    "module": "esnext",
     "moduleResolution": "node",
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noUnusedParameters": true,
     "removeComments": true,
+    "resolveJsonModule" : true,
     "sourceMap": true,
     "target": "ES2020",
     "outDir": "lib"
   },
-  "include": ["src/**/*.ts", "serverless.ts"],
+  "include": ["src/**/*.ts", "serverless.ts", "src/errors/NotFoundError.ts"],
   "exclude": [
     "node_modules/**/*",
     ".serverless/**/*",

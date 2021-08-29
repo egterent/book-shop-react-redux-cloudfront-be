@@ -1,20 +1,19 @@
 import type { APIGatewayProxyHandler } from 'aws-lambda';
 
 import { middyfy } from '@libs/lambda';
-import { findByIsbn } from '../../service/productService';
+import { list } from '../../service/bookService';
 
-const getProductsList: APIGatewayProxyHandler = async (event) => {
+const getProductsList: APIGatewayProxyHandler = async () => {
   try {
-    const { productId } = event.pathParameters;
-    const product = findByIsbn(productId);
+    const products = await list();
     return {
       statusCode: 200,
-      body: JSON.stringify(product),
+      body: JSON.stringify(products),
     };
   } catch (error) {
     return {
-      statusCode: 404,
-      body: error.message,
+      statusCode: 500,
+      body: 'Internal Server Error',
     };
   }
 }
