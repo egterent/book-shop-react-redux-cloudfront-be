@@ -60,7 +60,7 @@ test('Should return 500 response in case of an unexpected error.', async () => {
 
     const expectedResult = {
         statusCode: 500,
-        body: 'Internal Server Error',
+        body: 'AWS lambda error',
     };
 
     // act 

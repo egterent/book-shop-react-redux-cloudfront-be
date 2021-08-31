@@ -66,7 +66,7 @@ test('Should return 400 response if product id is missing.', async () => {
 
     const expectedResult = {
         statusCode: 400,
-        body: 'Product id is mandatory',
+        body: 'productId parameter is mandatory',
     };
 
     // act 
@@ -116,7 +116,7 @@ test('Should return 500 response in case of an unexpected error.', async () => {
 
     const expectedResult = {
         statusCode: 500,
-        body: 'Internal Server Error',
+        body: 'AWS lambda error',
     };
 
     // act 

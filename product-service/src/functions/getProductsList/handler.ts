@@ -8,7 +8,7 @@ const getProductsList: APIGatewayProxyHandler = async () => {
     const products = await list();
     return formatSuccessJSONResponse(200, products);
   } catch (error) {
-    return formatErrorJSONResponse(500, 'Internal Server Error');
+    return formatErrorJSONResponse(500, 'AWS lambda error');
   }
 }
 
