@@ -29,6 +29,11 @@ test('Should return the products list.', async () => {
     main = (await import('./handler')).main;
 
     const expectedResult = {
+        headers: {
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
+        },
         statusCode: 200,
         body: JSON.stringify(productsList),
     };
