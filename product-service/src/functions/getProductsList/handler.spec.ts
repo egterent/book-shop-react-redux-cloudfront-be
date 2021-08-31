@@ -1,12 +1,12 @@
 import { mocked } from 'ts-jest/utils';
 import type { APIGatewayProxyHandler } from 'aws-lambda';
 import { middyfy } from '@libs/lambda';
-import { list } from '../../service/bookService';
+import { list } from '../../service/productService';
 
 jest.mock('@libs/lambda');
-jest.mock('../../service/bookService');
+jest.mock('../../service/productService');
 
-const booksList = require('../../service/data/booksList.json');
+const productsList = require('../../service/data/productsList.json');
 
 let main;
 let mockedMiddyfy: jest.MockedFunction<typeof middyfy>;
@@ -16,10 +16,10 @@ beforeEach(() => {
     jest.clearAllMocks();
 });
 
-test('Should return the books list.', async () => {
+test('Should return the products list.', async () => {
     // arrange
     mockedList = mocked(list);
-    mockedList.mockResolvedValue(booksList);
+    mockedList.mockResolvedValue(productsList);
 
     mockedMiddyfy = mocked(middyfy);
     mockedMiddyfy.mockImplementation((handler: APIGatewayProxyHandler) => {
@@ -30,7 +30,7 @@ test('Should return the books list.', async () => {
 
     const expectedResult = {
         statusCode: 200,
-        body: JSON.stringify(booksList),
+        body: JSON.stringify(productsList),
     };
 
     // act 

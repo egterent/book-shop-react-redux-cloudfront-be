@@ -2,22 +2,22 @@ import { mocked } from 'ts-jest/utils';
 import type { APIGatewayProxyHandler } from 'aws-lambda';
 import { NotFoundError } from '../../errors/NotFoundError';
 import { middyfy } from '@libs/lambda';
-import { findByIsbn } from '../../service/bookService';
+import { findByIsbn } from '../../service/productService';
 
 jest.mock('@libs/lambda');
-jest.mock('../../service/bookService');
+jest.mock('../../service/productService');
 
-const booksList = require('../../service/data/booksList.json');
+const productsList = require('../../service/data/productsList.json');
 
 let main;
 let mockedMiddyfy: jest.MockedFunction<typeof middyfy>;
 let mockedfindByIsbn: jest.MockedFunction<typeof findByIsbn>;
 
-const book = booksList[0];
-const isbn = booksList[0].isbn;
+const product = productsList[0];
+const id = productsList[0].id;
 const event = {
     pathParameters: {
-        productId: isbn
+        productId: id
     }
 };
 
@@ -25,10 +25,10 @@ beforeEach(() => {
     jest.clearAllMocks();
 });
 
-test('Should return a book by its ISBN.', async () => {
+test('Should return a product by its ISBN.', async () => {
     // arrange
     mockedfindByIsbn = mocked(findByIsbn);
-    mockedfindByIsbn.mockResolvedValue(book);
+    mockedfindByIsbn.mockResolvedValue(product);
 
     mockedMiddyfy = mocked(middyfy);
     mockedMiddyfy.mockImplementation((handler: APIGatewayProxyHandler) => {
@@ -39,7 +39,7 @@ test('Should return a book by its ISBN.', async () => {
 
     const expectedResult = {
         statusCode: 200,
-        body: JSON.stringify(book),
+        body: JSON.stringify(product),
     };
 
     // act 
@@ -50,9 +50,9 @@ test('Should return a book by its ISBN.', async () => {
     expect(actualResult).toEqual(expectedResult);
 });
 
-test('Should return 404 response, if a book is not found.', async () => {
+test('Should return 404 response, if a product is not found.', async () => {
     // arrange
-    const errorMessage = "Book not found";
+    const errorMessage = "Product not found";
     mockedfindByIsbn = mocked(findByIsbn);
     mockedfindByIsbn.mockImplementation(() => { throw new NotFoundError(errorMessage)});
 

@@ -1,5 +1,5 @@
-export interface Book {
-    isbn: string;
+export interface Product {
+    id: string;
     title: string;
     author: string;
     publisher: string;
