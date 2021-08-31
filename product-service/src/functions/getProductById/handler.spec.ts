@@ -38,6 +38,11 @@ test('Should return a product by its ISBN.', async () => {
     main = (await import('./handler')).main;
 
     const expectedResult = {
+        headers: {
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
+        },
         statusCode: 200,
         body: JSON.stringify(product),
     };
@@ -47,6 +52,27 @@ test('Should return a product by its ISBN.', async () => {
 
     // assert
     expect(mockedfindByIsbn).toHaveBeenCalledTimes(1);
+    expect(actualResult).toEqual(expectedResult);
+});
+
+test('Should return 400 response if product id is missing.', async () => {
+    // arrange
+    mockedMiddyfy = mocked(middyfy);
+    mockedMiddyfy.mockImplementation((handler: APIGatewayProxyHandler) => {
+        return handler as never;
+    });
+
+    main = (await import('./handler')).main;
+
+    const expectedResult = {
+        statusCode: 400,
+        body: 'Product id is mandatory',
+    };
+
+    // act 
+    const actualResult = await main({});
+
+    // assert
     expect(actualResult).toEqual(expectedResult);
 });
 
