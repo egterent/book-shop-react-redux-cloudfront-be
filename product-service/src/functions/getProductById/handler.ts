@@ -9,7 +9,7 @@ const getProductsList: APIGatewayProxyHandler = async (event) => {
   try {
     productId = event.pathParameters.productId;
   } catch {
-    return formatErrorJSONResponse(400, 'Product id is mandatory');
+    return formatErrorJSONResponse(400, 'productId parameter is mandatory');
   }
 
   try {
@@ -20,7 +20,7 @@ const getProductsList: APIGatewayProxyHandler = async (event) => {
       return formatErrorJSONResponse(404, error.message);
     }
 
-    return formatErrorJSONResponse(500, 'Internal Server Error');
+    return formatErrorJSONResponse(500, 'AWS lambda error');
   }
 }
 
