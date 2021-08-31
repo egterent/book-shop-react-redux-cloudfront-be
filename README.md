@@ -1,1 +1,1 @@
-# book-shop-react-redux-cloudfront-be
+# product-shop-react-redux-cloudfront-be

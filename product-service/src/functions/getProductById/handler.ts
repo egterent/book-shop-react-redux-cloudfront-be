@@ -1,6 +1,6 @@
 import type { APIGatewayProxyHandler } from 'aws-lambda';
 import { middyfy } from '@libs/lambda';
-import { findByIsbn } from '../../service/bookService';
+import { findByIsbn } from '../../service/productService';
 import { NotFoundError } from '../../errors/NotFoundError';
 
 const getProductsList: APIGatewayProxyHandler = async (event) => {

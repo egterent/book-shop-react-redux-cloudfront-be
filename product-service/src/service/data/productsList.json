@@ -1,16 +1,16 @@
 [
     {
-        "isbn": "9781617292576",
+        "id": "9781617292576",
         "title": "Node.js in Action",
         "author": "Alex Young, Bradley Meck, and Mike Cantelon",
         "publisher": "Manning",
-        "description": "Node.js in Action, Second Edition is a thoroughly revised book based on the best-selling first edition. It starts at square one and guides you through all the features, techniques, and concepts you'll need to build production-quality Node applications.",
+        "description": "Node.js in Action, Second Edition is a thoroughly revised product based on the best-selling first edition. It starts at square one and guides you through all the features, techniques, and concepts you'll need to build production-quality Node applications.",
         "year": 2017,
         "price": 24.99,
         "count": 10
     },
     {
-        "isbn": "9781617294723",
+        "id": "9781617294723",
         "title": "Serverless Applications with Node.js",
         "author": "Slobodan Stojanović and Aleksandar Simović",
         "publisher": "Manning",
@@ -20,7 +20,7 @@
         "count": 12
     },
     {
-        "isbn": "9781617293719",
+        "id": "9781617293719",
         "title": "AWS Lambda in Action",
         "author": "Danilo Poccia",
         "publisher": "Manning",
@@ -30,11 +30,11 @@
         "count": 8
     },
     {
-        "isbn": "9781617297335",
+        "id": "9781617297335",
         "title": "AWS Security",
         "author": "Dylan Shields",
         "publisher": "Manning",
-        "description": "AWS Security is an invaluable guide that you’ll want to have on hand when you’re facing any cloud security problem. With a cookbook-style delivery, it’s filled with well-documented examples and procedures you can apply to common AWS security issues. This book covers best practices for access policies, data protection, auditing, continuous monitoring, and incident response. You’ll also explore several deliberately insecure applications, including a social media site and a mobile app, learning the exploits and vulnerabilities commonly used to attack them and the security practices to counter those attacks. With this practical primer, you’ll be well prepared to evaluate your system’s security, detect threats, and respond with confidence.",
+        "description": "AWS Security is an invaluable guide that you’ll want to have on hand when you’re facing any cloud security problem. With a cookproduct-style delivery, it’s filled with well-documented examples and procedures you can apply to common AWS security issues. This product covers best practices for access policies, data protection, auditing, continuous monitoring, and incident response. You’ll also explore several deliberately insecure applications, including a social media site and a mobile app, learning the exploits and vulnerabilities commonly used to attack them and the security practices to counter those attacks. With this practical primer, you’ll be well prepared to evaluate your system’s security, detect threats, and respond with confidence.",
         "year": 2020,
         "price": 24.99,
         "count": 5

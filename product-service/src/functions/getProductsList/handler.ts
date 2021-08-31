@@ -1,7 +1,7 @@
 import type { APIGatewayProxyHandler } from 'aws-lambda';
 
 import { middyfy } from '@libs/lambda';
-import { list } from '../../service/bookService';
+import { list } from '../../service/productService';
 
 const getProductsList: APIGatewayProxyHandler = async () => {
   try {
