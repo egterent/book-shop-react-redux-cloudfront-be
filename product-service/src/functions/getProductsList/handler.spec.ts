@@ -59,6 +59,11 @@ test('Should return 500 response in case of an unexpected error.', async () => {
     main = (await import('./handler')).main;
 
     const expectedResult = {
+        headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Origin": "*",
+        },
         statusCode: 500,
         body: 'AWS lambda error',
     };
