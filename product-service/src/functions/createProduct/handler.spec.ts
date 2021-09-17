@@ -1,41 +1,47 @@
 import { mocked } from 'ts-jest/utils';
 import type { APIGatewayProxyHandler } from 'aws-lambda';
-import { NotFoundError } from '../../errors/NotFoundError';
 import { middyfy } from '@libs/lambda';
-import { findById } from '../../service/productService';
+import Product from '../../models/Product';
+import { createNewProduct } from '../../service/productService';
+import { ValidationError } from '../../errors/ValidationError';
 import { logRequest } from '../../logger/logger';
 
 jest.mock('@libs/lambda');
 jest.mock('../../service/productService');
 jest.mock('../../logger/logger');
 
-const productsList = require('../../service/data/productsList.json');
+const product = {
+    isbn: "1234567890123",
+    title: "Title",
+    author: "Author",
+    publisher: "Publisher",
+    description: "Description",
+    year: 2020,
+    price: 10.99,
+    count: 1
+};
+const newProduct: Product = { id: "1", ...product };
+const event = {
+    httpMethod: 'post',
+    body: '{"isbn": "1234567890123",\n"title": "Title",\n"author": "Author",\n"publisher": "Publisher",\n"description": "Description",\n"year": 2020,\n"price": 10.99,\n"count": 1}',
+};
 
 let main;
 let mockedMiddyfy: jest.MockedFunction<typeof middyfy>;
-let mockedfindById: jest.MockedFunction<typeof findById>;
+let mockedCreateNewProduct: jest.MockedFunction<typeof createNewProduct>;
 let mockedLogRequest: jest.MockedFunction<typeof logRequest>;
 
-mockedLogRequest = mocked(logRequest);
 mockedMiddyfy = mocked(middyfy);
-mockedfindById = mocked(findById);
-
-const product = productsList[0];
-const id = productsList[0].id;
-const event = {
-    httpMethod: 'get',
-    pathParameters: {
-        productId: id
-    }
-};
+mockedLogRequest = mocked(logRequest);
+mockedCreateNewProduct = mocked(createNewProduct);
 
 beforeEach(() => {
     jest.clearAllMocks();
 });
 
-test('Should return a product by its ISBN.', async () => {
+test('Should return the products createNewProduct.', async () => {
     // arrange
-    mockedfindById.mockResolvedValue(product);
+    mockedCreateNewProduct.mockResolvedValue(newProduct);
 
     mockedMiddyfy.mockImplementation((handler: APIGatewayProxyHandler) => {
         return handler as never;
@@ -50,7 +56,7 @@ test('Should return a product by its ISBN.', async () => {
             "Content-Type": "application/json",
         },
         statusCode: 200,
-        body: JSON.stringify(product),
+        body: JSON.stringify(newProduct),
     };
 
     // act 
@@ -59,12 +65,16 @@ test('Should return a product by its ISBN.', async () => {
     // assert
     expect(mockedLogRequest).toHaveBeenCalledTimes(1);
     expect(mockedLogRequest).toHaveBeenCalledWith(event);
-    expect(mockedfindById).toHaveBeenCalledTimes(1);
+    expect(mockedCreateNewProduct).toHaveBeenCalledTimes(1);
+    expect(mockedCreateNewProduct).toHaveBeenCalledWith(product);
     expect(actualResult).toEqual(expectedResult);
 });
 
-test('Should return 400 response if product id is missing.', async () => {
+test('Should return 400 response, if a product is not valid.', async () => {
     // arrange
+    const errorMessage = "Product is invalid";
+    mockedCreateNewProduct.mockImplementation(() => { throw new ValidationError(errorMessage)});
+
     mockedMiddyfy.mockImplementation((handler: APIGatewayProxyHandler) => {
         return handler as never;
     });
@@ -78,36 +88,6 @@ test('Should return 400 response if product id is missing.', async () => {
             "Access-Control-Allow-Origin": "*",
         },
         statusCode: 400,
-        body: 'productId parameter is mandatory',
-    };
-
-    // act 
-    const actualResult = await main({});
-
-    // assert
-    expect(mockedLogRequest).toHaveBeenCalledTimes(1);
-    expect(mockedLogRequest).toHaveBeenCalledWith({});
-    expect(actualResult).toEqual(expectedResult);
-});
-
-test('Should return 404 response, if a product is not found.', async () => {
-    // arrange
-    const errorMessage = "Product not found";
-    mockedfindById.mockImplementation(() => { throw new NotFoundError(errorMessage)});
-
-    mockedMiddyfy.mockImplementation((handler: APIGatewayProxyHandler) => {
-        return handler as never;
-    });
-
-    main = (await import('./handler')).main;
-
-    const expectedResult = {
-        headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Methods": "*",
-            "Access-Control-Allow-Origin": "*",
-        },
-        statusCode: 404,
         body: errorMessage,
     };
 
@@ -117,13 +97,14 @@ test('Should return 404 response, if a product is not found.', async () => {
     // assert
     expect(mockedLogRequest).toHaveBeenCalledTimes(1);
     expect(mockedLogRequest).toHaveBeenCalledWith(event);
-    expect(mockedfindById).toHaveBeenCalledTimes(1);
+    expect(mockedCreateNewProduct).toHaveBeenCalledTimes(1);
+    expect(mockedCreateNewProduct).toHaveBeenCalledWith(product);
     expect(actualResult).toEqual(expectedResult);
 });
 
 test('Should return 500 response in case of an unexpected error.', async () => {
     // arrange
-    mockedfindById.mockImplementation(() => { throw new Error("Something bad happend")});
+    mockedCreateNewProduct.mockImplementation(() => { throw new Error("Something bad happend")});
 
     mockedMiddyfy.mockImplementation((handler: APIGatewayProxyHandler) => {
         return handler as never;
@@ -147,6 +128,7 @@ test('Should return 500 response in case of an unexpected error.', async () => {
     // assert
     expect(mockedLogRequest).toHaveBeenCalledTimes(1);
     expect(mockedLogRequest).toHaveBeenCalledWith(event);
-    expect(mockedfindById).toHaveBeenCalledTimes(1);
+    expect(mockedCreateNewProduct).toHaveBeenCalledTimes(1);
+    expect(mockedCreateNewProduct).toHaveBeenCalledWith(product);
     expect(actualResult).toEqual(expectedResult);
 });

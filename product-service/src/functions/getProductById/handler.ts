@@ -1,10 +1,13 @@
 import { middyfy } from '@libs/lambda';
 import type { APIGatewayProxyHandler } from 'aws-lambda';
 import { formatSuccessJSONResponse, formatErrorJSONResponse } from '@libs/apiGateway';
-import { findByIsbn } from '../../service/productService';
+import { findById } from '../../service/productService';
 import { NotFoundError } from '../../errors/NotFoundError';
+import { logRequest } from '../../logger/logger';
 
 const getProductsList: APIGatewayProxyHandler = async (event) => {
+  logRequest(event);
+  
   let productId = '';
   try {
     productId = event.pathParameters.productId;
@@ -13,7 +16,7 @@ const getProductsList: APIGatewayProxyHandler = async (event) => {
   }
 
   try {
-    const product = await findByIsbn(productId);
+    const product = await findById(productId);
     return formatSuccessJSONResponse(200, product);
   } catch (error) {
     if (error instanceof NotFoundError) {
