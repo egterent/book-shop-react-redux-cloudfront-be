@@ -2,15 +2,25 @@ import { mocked } from 'ts-jest/utils';
 import type { APIGatewayProxyHandler } from 'aws-lambda';
 import { middyfy } from '@libs/lambda';
 import { list } from '../../service/productService';
+import { logRequest } from '../../logger/logger';
 
 jest.mock('@libs/lambda');
 jest.mock('../../service/productService');
+jest.mock('../../logger/logger');
 
 const productsList = require('../../service/data/productsList.json');
+const event = {
+    httpMethod: 'get'
+};
 
 let main;
 let mockedMiddyfy: jest.MockedFunction<typeof middyfy>;
 let mockedList: jest.MockedFunction<typeof list>;
+let mockedLogRequest: jest.MockedFunction<typeof logRequest>;
+
+mockedMiddyfy = mocked(middyfy);
+mockedLogRequest = mocked(logRequest);
+mockedList = mocked(list);
 
 beforeEach(() => {
     jest.clearAllMocks();
@@ -18,10 +28,8 @@ beforeEach(() => {
 
 test('Should return the products list.', async () => {
     // arrange
-    mockedList = mocked(list);
     mockedList.mockResolvedValue(productsList);
 
-    mockedMiddyfy = mocked(middyfy);
     mockedMiddyfy.mockImplementation((handler: APIGatewayProxyHandler) => {
         return handler as never;
     });
@@ -39,19 +47,20 @@ test('Should return the products list.', async () => {
     };
 
     // act 
-    const actualResult = await main();
+    const actualResult = await main(event);
 
     // assert
+    expect(actualResult).toEqual(expectedResult);
+    expect(mockedLogRequest).toHaveBeenCalledTimes(1);
+    expect(mockedLogRequest).toHaveBeenCalledWith(event);
     expect(mockedList).toHaveBeenCalledTimes(1);
     expect(actualResult).toEqual(expectedResult);
 });
 
 test('Should return 500 response in case of an unexpected error.', async () => {
     // arrange
-    mockedList = mocked(list);
     mockedList.mockImplementation(() => { throw new Error("Something bad happend")});
 
-    mockedMiddyfy = mocked(middyfy);
     mockedMiddyfy.mockImplementation((handler: APIGatewayProxyHandler) => {
         return handler as never;
     });
@@ -69,9 +78,11 @@ test('Should return 500 response in case of an unexpected error.', async () => {
     };
 
     // act 
-    const actualResult = await main();
+    const actualResult = await main(event);
 
     // assert
+    expect(mockedLogRequest).toHaveBeenCalledTimes(1);
+    expect(mockedLogRequest).toHaveBeenCalledWith(event);
     expect(mockedList).toHaveBeenCalledTimes(1);
     expect(actualResult).toEqual(expectedResult);
 });

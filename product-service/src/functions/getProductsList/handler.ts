@@ -2,8 +2,10 @@ import { formatSuccessJSONResponse, formatErrorJSONResponse } from '@libs/apiGat
 import type { APIGatewayProxyHandler } from 'aws-lambda';
 import { middyfy } from '@libs/lambda';
 import { list } from '../../service/productService';
+import { logRequest } from '../../logger/logger';
 
-const getProductsList: APIGatewayProxyHandler = async () => {
+const getProductsList: APIGatewayProxyHandler = async (event) => {
+  logRequest(event);
   try {
     const products = await list();
     return formatSuccessJSONResponse(200, products);
