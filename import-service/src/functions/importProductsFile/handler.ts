@@ -1,6 +1,6 @@
 import { middyfy } from '@libs/lambda';
 import type { APIGatewayProxyHandler } from 'aws-lambda';
-import { formatResponse } from '@libs/apiGateway';
+import { formatResponseWithCredentials, formatErrorResponse } from '@libs/apiGateway';
 import { logRequest, logError } from '../../../../shared/logger/logger';
 import { S3 } from 'aws-sdk';
 
@@ -9,7 +9,7 @@ const importProductsFile: APIGatewayProxyHandler = async (event) => {
   
   const fileName = event.queryStringParameters?.name;
   if (!fileName) {
-    return formatResponse(400, 'fileName parameter is mandatory');
+    return formatErrorResponse(400, 'fileName parameter is mandatory');
   }
 
   const filePath = `uploaded/${fileName}`;
@@ -26,10 +26,10 @@ const importProductsFile: APIGatewayProxyHandler = async (event) => {
 
   try {
     const url = await s3.getSignedUrlPromise('putObject', parameters);
-    return formatResponse(200, url);
+    return formatResponseWithCredentials(200, url);
   } catch (error) {
     logError(error);
-    return formatResponse(500, 'AWS lambda error');
+    return formatErrorResponse(500, 'AWS lambda error');
   }
 }
 

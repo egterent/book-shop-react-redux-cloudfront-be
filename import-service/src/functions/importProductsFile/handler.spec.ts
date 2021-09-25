@@ -5,7 +5,7 @@ import { mocked } from 'ts-jest/utils';
 import { middyfy } from '@libs/lambda';
 import type { APIGatewayProxyHandler } from 'aws-lambda';
 import { logRequest, logError } from '../../../../shared/logger/logger';
-import { formatResponse } from '@libs/apiGateway';
+import { formatResponseWithCredentials, formatErrorResponse } from '@libs/apiGateway';
 import { S3 } from 'aws-sdk';
 
 let mockedGetSignedUrlPromise = jest.fn();
@@ -29,12 +29,14 @@ let main;
 let mockedMiddyfy: jest.MockedFunction<typeof middyfy>;
 let mockedLogRequest: jest.MockedFunction<typeof logRequest>;
 let mockedLogError: jest.MockedFunction<typeof logError>;
-let mockedFormatResponse: jest.MockedFunction<typeof formatResponse>;
+let mockedFormatResponseWithCredentials: jest.MockedFunction<typeof formatResponseWithCredentials>;
+let mockedFormatErrorResponse: jest.MockedFunction<typeof formatErrorResponse>;
 
 mockedLogRequest = mocked(logRequest);
 mockedLogError = mocked(logError);
 mockedMiddyfy = mocked(middyfy);
-mockedFormatResponse = mocked(formatResponse);
+mockedFormatResponseWithCredentials = mocked(formatResponseWithCredentials);
+mockedFormatErrorResponse = mocked(formatErrorResponse);
 
 const fileName = 'file name';
 const event = {
@@ -68,14 +70,14 @@ test('Should return the url for the uploaded file.', async () => {
 
     const formattedResponse = {
         headers: {
-            "Access-Control-Allow-Methods": "*",
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': true,
         },
         statusCode: 200,
         body: expectedUrl,
     };
-    mockedFormatResponse.mockImplementation(() => formattedResponse);
+    mockedFormatResponseWithCredentials.mockImplementation(() => formattedResponse);
     const expectedResult = formattedResponse;
 
     // act
@@ -102,13 +104,11 @@ test('Should return 400 response if the file name is missing.', async () => {
     const formattedResponse = {
         headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Methods": "*",
-            "Access-Control-Allow-Origin": "*",
         },
         statusCode: 400,
         body: 'fileName parameter is mandatory',
     };
-    mockedFormatResponse.mockImplementation(() => formattedResponse);
+    mockedFormatErrorResponse.mockImplementation(() => formattedResponse);
     const expectedResult = formattedResponse;
 
     // act 
@@ -138,13 +138,11 @@ test('Should return 500 response in case of an unexpected error.', async () => {
     const formattedResponse = {
         headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Methods": "*",
-            "Access-Control-Allow-Origin": "*",
         },
         statusCode: 500,
         body: 'AWS lambda error',
     };
-    mockedFormatResponse.mockImplementation(() => formattedResponse);
+    mockedFormatErrorResponse.mockImplementation(() => formattedResponse);
     const expectedResult = formattedResponse;
 
     // act 
