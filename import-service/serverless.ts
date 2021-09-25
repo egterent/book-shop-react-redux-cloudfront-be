@@ -1,17 +1,22 @@
 import type { AWS } from '@serverless/typescript';
 
-import hello from '@functions/hello';
+import importProductsFile from '@functions/importProductsFile';
 
 const serverlessConfiguration: AWS = {
   service: 'import-service',
   frameworkVersion: '2',
+  useDotenv: true,
   custom: {
     webpack: {
       webpackConfig: './webpack.config.js',
       includeModules: true,
     },
   },
-  plugins: ['serverless-webpack'],
+  plugins: [
+    'serverless-webpack',
+    'serverless-offline',
+    'serverless-dotenv-plugin',
+  ],
   provider: {
     name: 'aws',
     runtime: 'nodejs14.x',
@@ -21,11 +26,24 @@ const serverlessConfiguration: AWS = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      S3_BUCKET_NAME: '${env:S3_BUCKET_NAME}'
     },
+    iamRoleStatements: [
+      {
+        Effect: 'Allow',
+        Action: 's3:ListBucket',
+        Resource: '${env:S3_BUCKET_ARN}',
+      },
+      {
+        Effect: 'Allow',
+        Action: 's3:*',
+        Resource: '${env:S3_BUCKET_ARN_ALL}',
+      },      
+    ],
     lambdaHashingVersion: '20201221',
   },
   // import the function via paths
-  functions: { hello },
+  functions: { importProductsFile },
 };
 
 module.exports = serverlessConfiguration;
