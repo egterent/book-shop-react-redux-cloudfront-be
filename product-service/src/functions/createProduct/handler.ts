@@ -4,13 +4,14 @@ import { formatSuccessJSONResponse, formatErrorJSONResponse } from '@libs/apiGat
 import Product from '../../models/Product';
 import { createNewProduct } from '../../service/productService';
 import { ValidationError } from '../../errors/ValidationError';
-import { logRequest } from '../../logger/logger';
+import { logRequest } from '../../../../shared/logger/logger';
 
 const createProduct: APIGatewayProxyHandler = async (event) => {
     logRequest(event);
     try {
         const product: Product = JSON.parse(event.body);
         const newProduct = await createNewProduct(product);
+        const formattedResponse = formatSuccessJSONResponse(200, newProduct);
         return formatSuccessJSONResponse(200, newProduct);
     } catch (error) {
         if (error instanceof ValidationError) {

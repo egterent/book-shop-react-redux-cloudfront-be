@@ -2,11 +2,11 @@ import { mocked } from 'ts-jest/utils';
 import type { APIGatewayProxyHandler } from 'aws-lambda';
 import { middyfy } from '@libs/lambda';
 import { list } from '../../service/productService';
-import { logRequest } from '../../logger/logger';
+import { logRequest } from '../../../../shared/logger/logger';
 
 jest.mock('@libs/lambda');
 jest.mock('../../service/productService');
-jest.mock('../../logger/logger');
+jest.mock('../../../../shared/logger/logger');
 
 const productsList = require('../../service/data/productsList.json');
 const event = {
@@ -50,7 +50,6 @@ test('Should return the products list.', async () => {
     const actualResult = await main(event);
 
     // assert
-    expect(actualResult).toEqual(expectedResult);
     expect(mockedLogRequest).toHaveBeenCalledTimes(1);
     expect(mockedLogRequest).toHaveBeenCalledWith(event);
     expect(mockedList).toHaveBeenCalledTimes(1);

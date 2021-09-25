@@ -4,11 +4,11 @@ import { middyfy } from '@libs/lambda';
 import Product from '../../models/Product';
 import { createNewProduct } from '../../service/productService';
 import { ValidationError } from '../../errors/ValidationError';
-import { logRequest } from '../../logger/logger';
+import { logRequest } from '../../../../shared/logger/logger';
 
 jest.mock('@libs/lambda');
 jest.mock('../../service/productService');
-jest.mock('../../logger/logger');
+jest.mock('../../../../shared/logger/logger');
 
 const product = {
     isbn: "1234567890123",

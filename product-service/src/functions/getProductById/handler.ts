@@ -3,7 +3,7 @@ import type { APIGatewayProxyHandler } from 'aws-lambda';
 import { formatSuccessJSONResponse, formatErrorJSONResponse } from '@libs/apiGateway';
 import { findById } from '../../service/productService';
 import { NotFoundError } from '../../errors/NotFoundError';
-import { logRequest } from '../../logger/logger';
+import { logRequest } from '../../../../shared/logger/logger';
 
 const getProductsList: APIGatewayProxyHandler = async (event) => {
   logRequest(event);

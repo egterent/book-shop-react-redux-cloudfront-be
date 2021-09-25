@@ -3,7 +3,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "lib": ["ESNext"],
-    //"module": "esnext",
+    "module": "esnext",
     "moduleResolution": "node",
     "noUnusedLocals": false,
     "noUnusedParameters": true,
@@ -13,7 +13,7 @@
     "target": "ES2020",
     "outDir": "lib"
   },
-  "include": ["src/**/*.ts", "serverless.ts", "src/errors/NotFoundError.ts"],
+  "include": ["src/**/*.ts", "serverless.ts", "src/errors/NotFoundError.ts", "src/errors/ValidationError" ],
   "exclude": [
     "node_modules/**/*",
     ".serverless/**/*",

@@ -8,4 +8,8 @@ jspm_packages
 # Webpack directories
 .webpack
 
+# Environment variables
 .env
+
+# VS code
+.vscode
