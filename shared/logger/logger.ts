@@ -22,3 +22,7 @@ export const logRequest = event => {
 export const logError = error => {
   console.log(`ERROR: ${error.message}`);
 };
+
+export const logInfo = (message) => {
+  console.info(message);
+}

@@ -13,7 +13,6 @@ let mockedGetSignedUrlPromise = jest.fn();
 jest.mock('@libs/lambda');
 jest.mock('../../../../shared/logger/logger');
 jest.mock('@libs/apiGateway');
-jest.mock('@libs/apiGateway');
 jest.mock('aws-sdk', () => {
     return {
         S3: jest.fn().mockImplementation(() => {
