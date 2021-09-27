@@ -3,11 +3,11 @@ import type { APIGatewayProxyHandler } from 'aws-lambda';
 import { NotFoundError } from '../../errors/NotFoundError';
 import { middyfy } from '@libs/lambda';
 import { findById } from '../../service/productService';
-import { logRequest } from '../../logger/logger';
+import { logRequest } from '../../../../shared/logger/logger';
 
 jest.mock('@libs/lambda');
 jest.mock('../../service/productService');
-jest.mock('../../logger/logger');
+jest.mock('../../../../shared/logger/logger');
 
 const productsList = require('../../service/data/productsList.json');
 

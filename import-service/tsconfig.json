@@ -3,7 +3,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "lib": ["ESNext"],
-    "module": "esnext",
+    //"module": "esnext",
     "moduleResolution": "node",
     "noUnusedLocals": false,
     "noUnusedParameters": true,
