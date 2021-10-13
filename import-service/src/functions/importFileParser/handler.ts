@@ -1,6 +1,6 @@
 import { middyfy } from '@libs/lambda';
 import 'source-map-support/register';
-import { S3, SQS } from 'aws-sdk';
+import { S3 } from 'aws-sdk';
 import csvParser from 'csv-parser';
 import { logRequest, logError, logInfo } from '../../../../shared/logger/logger';
 import { formatErrorResponse } from '../../libs/apiGateway';
@@ -12,11 +12,9 @@ const importFileParser = async event => {
         const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME;
         const s3 = new S3({ region: 'eu-west-1' });
 
-        const sqs = new SQS();
-
         for (const record of event.Records) {
             const { key } = record.s3.object;
-            console.log(key);
+            logInfo(`${key}`);
 
             await new Promise<void>((resolve, reject) => {
                 s3.getObject({
@@ -29,21 +27,12 @@ const importFileParser = async event => {
                         logError(error);
                     })
                     .pipe(csvParser())
-                    .on('data', async data => {
-                        logInfo('Parsed data: ${JSON.stringify(data)}');
-                        await sqs.sendMessage(
-                            {
-                                QueueUrl: process.env.SQS_URL,
-                                MessageBody: JSON.stringify(data),
-                            }
-                        );
-                    })
                     .on('error', error => {
                         reject(error);
                         logError(error);
                     })
                     .on('end', async () => {
-                        console.log('Finish callback');
+                        logInfo('Finish callback');
                         resolve();
                     });
             });

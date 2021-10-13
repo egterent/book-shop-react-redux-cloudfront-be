@@ -1,7 +1,7 @@
 import type { AWS } from '@serverless/typescript';
 
 import importProductsFile from '@functions/importProductsFile';
-import importFileParser from '@functions/import';
+import importFileParser from '@functions/importFileParser';
 
 const serverlessConfiguration: AWS = {
   service: 'import-service',
@@ -21,6 +21,8 @@ const serverlessConfiguration: AWS = {
   provider: {
     name: 'aws',
     runtime: 'nodejs14.x',
+    stage: 'dev',
+    region: 'eu-west-1',
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
